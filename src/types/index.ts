@@ -1,6 +1,6 @@
 export interface IToDoItem {
-    userId: string;
-    id: string;
-    name: string;
+    userId: number;
+    id: number;
+    title: string;
     completed: boolean;
 };

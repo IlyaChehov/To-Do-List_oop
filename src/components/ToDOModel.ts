@@ -1,11 +1,12 @@
 import { IToDoItem } from '../types/index'
+import { IEvents } from './base/Events';
 
 export interface IToDoModel {
   items: IToDoItem[];
-  getItem(id: string): IToDoItem;
+  getItem(id: number): IToDoItem;
   addItem(data: IToDoItem): void;
-  deleteItem(id: string): void;
-  checkItem(id: string): void;
+  deleteItem(id: number): void;
+  checkItem(id: number): void;
   getTotal(): number;
   getDoneItem(): number;
 };
@@ -13,31 +14,35 @@ export interface IToDoModel {
 export class ToDoModel implements IToDoModel {
   protected _items: IToDoItem[] = [];
 
-  constructor() {};
+  constructor(protected event: IEvents) {};
 
   set items(data: IToDoItem[]) {
     this._items = data;
+    this.event.emit('item:changed');
   };
 
   get items() {
     return this._items;
   };
 
-  getItem(id: string): IToDoItem {
+  getItem(id: number): IToDoItem {
     return this._items.find(item => item.id === id);
   };
 
   addItem(data: IToDoItem) {
     this._items.push(data);
+    this.event.emit('item:changed');
   };
 
-  deleteItem(id: string) {
+  deleteItem(id: number) {
     this._items = this._items.filter(item => item.id !== id);
+    this.event.emit('item:changed');
   };
 
-  checkItem(id: string) {
+  checkItem(id: number) {
     const itemComplited = this.getItem(id);
     itemComplited.completed = !itemComplited.completed;
+    this.event.emit('item:changed');
   };
 
   getTotal() {
